@@ -1,3 +1,5 @@
+print("Loading the Script")
+
 local controller = "duvpe"
 local alt = "dyzhu"
 
