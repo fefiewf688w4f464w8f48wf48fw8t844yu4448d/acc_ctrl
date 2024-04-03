@@ -1,0 +1,56 @@
+local controller = "duvpe"
+local alt = "dyzhu"
+
+local TargetPerson = nil
+local normalKillTarget = false
+local tpKillTarget = false
+
+local player = game.Players:FindFirstChild(controller)
+if not player then
+    warn("Player not found:", controller)
+    return
+end
+
+spawn(function()
+    player.Chatted:Connect(function(msg)
+        for i, v in pairs(game.Players:GetChildren()) do
+            if msg == "/e :tpto " .. v.Name then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Character.HumanoidRootPart.CFrame
+            end
+        end
+        for i, v in pairs(game.Players:GetChildren()) do
+            if msg == "/e :set_target " .. v.Name then
+                TargetPerson = v.Name
+            end
+        end
+        if msg == "/e :bring" then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players[controller].Character.HumanoidRootPart.CFrame
+        end
+        if msg == "/e :tpkill" then
+            tpKillTarget = true
+        end
+        if msg == "/e :untpkill" then
+            tpKillTarget = false
+        end
+    end)
+end)
+
+spawn(function()
+    game:GetService("RunService").RenderStepped:Connect(function()
+        if tpKillTarget == true then
+            for i, v in pairs(game:GetService("Players").LocalPlayer.Backpack:GetChildren()) do
+                if v:IsA("Tool") then
+                    if game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart", math.huge) then
+                        v.Parent = game.Players.LocalPlayer.Character
+                    end
+                end
+            end
+              
+            game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool"):Activate()
+            game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool").Handle.Massless = true
+            game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool").Handle.Size = Vector3.new(7.5, 7.5, 7.5)
+                    
+            game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart", math.huge).CFrame = game.Players:FindFirstChild(TargetPerson).Character.HumanoidRootPart.CFrame
+        end
+    end)
+end)
